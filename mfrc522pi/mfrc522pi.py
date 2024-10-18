@@ -135,7 +135,7 @@ class MFRC522:
         spi.transfer(self.spi, ((addr << 1) & 0x7E, value))
 
     def read(self, addr: int) -> int:
-        result = spi.transfer(self.spi, (((addr << 1) & 0x7E) | 0x89, 0))
+        result = spi.transfer(self.spi, (((addr << 1) & 0x7E) | 0x80, 0))
         return result[1]
 
     def set_bit_mask(self, reg: int, mask: int):
@@ -155,7 +155,7 @@ class MFRC522:
         self.clear_bit_mask(self.REG.TxControl, 0x03)
 
     def version(self) -> int:
-        return self.read(0x37)
+        return self.read(self.REG.Version)
 
     def reset(self):
         self.write(self.REG.Command, self.PCD.RESETPHASE)
