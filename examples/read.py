@@ -36,3 +36,7 @@ def main():
     except KeyboardInterrupt:
         reader.cleanup()
         print('Exiting...')
+
+
+if __name__ == '__main__':
+    main()
