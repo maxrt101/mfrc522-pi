@@ -161,7 +161,7 @@ class MFRC522:
         self.write(self.REG.Command, self.PCD.RESETPHASE)
 
     def init(self):
-        GPIO.output(self.reset_pin)
+        GPIO.output(self.reset_pin, 1)
 
         self.reset()
 
