@@ -24,7 +24,7 @@ def main():
             res = reader.anti_collision()
 
             if res.status != Status.OK:
-                print(f'AntiCollision error: {res.status}')
+                print(f'AntiCollision error: {res.status.name}')
                 continue
 
             uid = res.uid
@@ -36,22 +36,24 @@ def main():
             res = reader.select_tag(res.uid)
 
             if res.status != Status.OK:
-                print(f'Selection error: {res.status}')
+                print(f'Selection error: {res.status.name}')
                 continue
 
             status = reader.authenticate(PICC.AUTHENT1A, 8, key, uid)
 
             if status != Status.OK:
-                print(f'Authentication error: {status}')
+                print(f'Authentication error: {status.name}')
                 continue
 
             print(f'Reading block {BLOCK}')
             res = reader.read_block(BLOCK)
             reader.stop_crypto1()
-            if res.status == Status.OK:
-                print(' '.join(f'0x{x:02X}' for x in res.data))
-            else:
-                print(f'Error reading block {BLOCK}: {res.status}')
+
+            if res.status != Status.OK:
+                print(f'Error reading block {BLOCK}: {res.status.name}')
+
+            print(' '.join(f'0x{x:02X}' for x in res.data))
+
     except KeyboardInterrupt:
         print('Exiting...')
     except Exception as e:
