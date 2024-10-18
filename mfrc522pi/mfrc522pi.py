@@ -211,7 +211,6 @@ class MFRC522:
         while True:
             n = self.read(self.REG.CommIrq)
             i -= 1
-            print(f'transceive: loop i={i} n={n} ({(i != 0)} {~(n & 1)} {~(n & wait_irq)})')
             if ~((i != 0) and ~(n & 1) and ~(n & wait_irq)):
                 break
 
@@ -221,8 +220,6 @@ class MFRC522:
             if (self.read(self.REG.Error) & 0x1B) == 0:
                 status = self.MI.OK
 
-                print(f'transceive: i={i} n={n} irq={irq_enable}')
-
                 if n & irq_enable & 1:
                     status = self.MI.NOTAGERR
 
@@ -230,14 +227,10 @@ class MFRC522:
                     n = self.read(self.REG.FIFOLevel)
                     last_bits = self.read(self.REG.Control) & 7
 
-                    print(f'transceive: n={n} last_bits={last_bits}')
-
                     buffer_size = (n-1) * 8 + last_bits if last_bits != 0 else n * 8
 
                     n = 1 if n == 0 else n
                     n = self.MAX_LEN if n > self.MAX_LEN else n
-
-                    print(f'transceive: n={n} buffer_size={buffer_size}')
 
                     for _ in range(n):
                         buffer.append(self.read(self.REG.FIFOData))
