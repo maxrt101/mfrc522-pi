@@ -14,7 +14,7 @@ def main():
             res = reader.request(reader.PICC.REQIDL)
 
             if res.status == reader.MI.OK:
-                print('Detected a card')
+                print('\nDetected a card')
 
             res = reader.anti_collision()
 
