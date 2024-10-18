@@ -318,8 +318,8 @@ class MFRC522:
             print('authenticate: error')
 
         # WTF
-        if self.read(self.REG.Status2) & 8 != 0:
-            print('authenticate: error status2 & 8 != 0')
+        if self.read(self.REG.Status2) & 8 == 0:
+            print('authenticate: error status2 & 8 == 0')
 
         return res.status
 
