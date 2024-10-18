@@ -310,7 +310,7 @@ class MFRC522:
     def authenticate(self, mode: int, addr: int, key: list[int], serial: list[int]) -> int:
         buffer = [mode, addr]
         buffer.extend(key)
-        buffer.extend(serial[:5])
+        buffer.extend(serial[:4])
 
         res = self.transceive(self.PCD.AUTHENT, buffer)
 
