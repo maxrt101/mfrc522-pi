@@ -227,9 +227,10 @@ class MFRC522:
                     n = self.read(self.REG.FIFOLevel)
                     last_bits = self.read(self.REG.Control) & 7
 
-                    buffer_size = (n-1) * 8 + last_bits if last_bits else n * 8
+                    buffer_size = (n-1) * 8 + last_bits if last_bits != 0 else n * 8
 
-                    n = 1 if not n else (self.MAX_LEN if n > self.MAX_LEN else n)
+                    n = 1 if n == 0 else n
+                    n = self.MAX_LEN if n > self.MAX_LEN else n
 
                     for _ in range(n):
                         buffer.append(self.read(self.REG.FIFOData))
