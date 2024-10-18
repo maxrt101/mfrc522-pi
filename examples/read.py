@@ -19,7 +19,7 @@ def main():
             res = reader.anti_collision()
 
             if res.status == reader.MI.OK:
-                print(f'UID: {" ".join([hex(x) for x in res.uid])}')
+                print(f'UID: {" ".join(["0x{:02X}".format(x) for x in res.uid])}')
 
                 key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 
@@ -29,8 +29,9 @@ def main():
 
                 if status == reader.MI.OK:
                     print('Reading block 8')
-                    reader.read_block(8)
+                    data = reader.read_block(8)
                     reader.stop_crypto1()
+                    print(' '.join('0x{:02X}'.format(x) for x in data))
                 else:
                     print('Authentication error')
     except KeyboardInterrupt:
