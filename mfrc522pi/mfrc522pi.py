@@ -252,8 +252,6 @@ class MFRC522:
         return self.RequestResult(res.status, res.size)
 
     def anti_collision(self) -> AntiCollisionResult:
-        serial_check = 0
-
         self.write(self.REG.BitFraming, 0)
 
         serial = [self.PICC.ANTICOLL, 0x20]
@@ -261,9 +259,14 @@ class MFRC522:
         res = self.transceive(self.PCD.TRANSCEIVE, serial)
 
         if res.status == self.MI.OK:
+            print(f'AC: TX OK {res.data} {res.size}')
             if len(res.data) == 5:
+                serial_check = 0
                 for x in res.data[:5]:
-                    serial_check = serial_check ^ x
+                    print(f'CRC before: {serial_check} {x}')
+                    serial_check ^= x
+                    print(f'CRC after:  {serial_check} {x}')
+                print(f'CRC: {serial_check}')
                 if serial_check != res.data[4]:
                     res.status = self.MI.ERR
             else:
