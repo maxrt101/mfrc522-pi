@@ -326,7 +326,7 @@ class MFRC522:
     def stop_crypto1(self):
         self.clear_bit_mask(self.REG.Status2, 8)
 
-    def read_block(self, addr: int):
+    def read_block(self, addr: int) -> list[int]:
         data = [self.PICC.READ, addr]
         data.extend(self.calculate_crc(data))
         res = self.transceive(self.PCD.TRANSCEIVE, data)
@@ -364,12 +364,12 @@ class MFRC522:
         
         return self.MI.OK
     
-    def dump_1k(self, key, uid):
-        buffer = []
+    def dump_1k(self, key, uid) -> dict[int, list[int]]:
+        buffer = {}
         for i in range(64):
             status = self.authenticate(self.PICC.AUTHENT1A, i, key, uid)
             if status == self.MI.OK:
-                buffer.extend(self.read_block(i))
+                buffer[i] = self.read_block(i)
             else:
                 print('dump_1k: authentication error')
 
