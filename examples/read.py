@@ -27,7 +27,9 @@ def main():
                 print(f'AntiCollision error: {res.status}')
                 continue
 
-            print(f'UID: {" ".join([f"0x{x:02X}" for x in res.uid])}')
+            uid = res.uid
+
+            print(f'UID: {" ".join([f"0x{x:02X}" for x in uid])}')
 
             key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 
@@ -37,7 +39,7 @@ def main():
                 print(f'Selection error: {res.status}')
                 continue
 
-            status = reader.authenticate(PICC.AUTHENT1A, 8, key, res.uid)
+            status = reader.authenticate(PICC.AUTHENT1A, 8, key, uid)
 
             if status != Status.OK:
                 print(f'Authentication error: {status}')

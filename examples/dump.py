@@ -25,7 +25,9 @@ def main():
                 print(f'AntiCollision error: {res.status}')
                 continue
 
-            print(f'UID: {" ".join([f"0x{x:02X}" for x in res.uid])}')
+            uid = res.uid
+
+            print(f'UID: {" ".join([f"0x{x:02X}" for x in uid])}')
 
             key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 
@@ -36,7 +38,7 @@ def main():
                 continue
 
             print('Dumping 1k:')
-            res = reader.dump_1k(key, res.uid)
+            res = reader.dump_1k(key, uid)
             reader.stop_crypto1()
 
             if res.status == Status.OK:
