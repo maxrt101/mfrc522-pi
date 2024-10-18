@@ -12,7 +12,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/maxrt101/mfrc522-pi",
-    packages=setuptools.find_packages(),
+    packages=['mfrc522pi'],
     classifiers=[
         "Programming Language :: Python :: 3",
     ],
