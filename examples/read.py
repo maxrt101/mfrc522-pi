@@ -31,10 +31,10 @@ def main():
 
             key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 
-            status = reader.select_tag(res.uid)
+            res = reader.select_tag(res.uid)
 
-            if status != Status.OK:
-                print(f'Selection error: {status}')
+            if res.status != Status.OK:
+                print(f'Selection error: {res.status}')
                 continue
 
             status = reader.authenticate(PICC.AUTHENT1A, 8, key, res.uid)
