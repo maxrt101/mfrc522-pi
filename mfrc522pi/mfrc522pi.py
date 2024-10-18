@@ -1,7 +1,7 @@
 ##!/usr/bin/env python3
 
 from dataclasses import dataclass
-import mfrc522pi.logger
+from  mfrc522pi.logger import logger
 import RPi.GPIO as GPIO
 import spi
 
