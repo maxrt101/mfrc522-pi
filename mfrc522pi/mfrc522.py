@@ -205,7 +205,7 @@ class MFRC522:
         res = self.transceive(PCD.AUTHENT, buffer)
 
         if res.status != Status.OK:
-            logger.error('authenticate: error')
+            logger.error(f'authenticate: error {res.status.name}')
 
         # FIXME: WTF
         if self.read(REG.Status2) & 8 == 0:
