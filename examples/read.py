@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from mfrc522pi import MFRC522
+import traceback
 
 
 def main():
@@ -35,8 +36,11 @@ def main():
                 else:
                     print('Authentication error')
     except KeyboardInterrupt:
-        reader.cleanup()
         print('Exiting...')
+    except Exception as e:
+        print(traceback.format_exc())
+    finally:
+        reader.cleanup()
 
 
 if __name__ == '__main__':

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from mfrc522pi import MFRC522
+import traceback
 
 
 def main():
@@ -32,8 +33,11 @@ def main():
                 for sector_id, sector_data in data.items():
                     print(f'{sector_id:03}: {" ".join([f"0x{x:02X}" for x in sector_data])}')
     except KeyboardInterrupt:
-        reader.cleanup()
         print('Exiting...')
+    except Exception as e:
+        print(traceback.format_exc())
+    finally:
+        reader.cleanup()
 
 
 if __name__ == '__main__':
