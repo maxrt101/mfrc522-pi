@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from mfrc522pi import MFRC522
+from mfrc522pi import *
 import time
 import sys
 
@@ -15,9 +15,9 @@ def main():
 
     try:
         while True:
-            reader.write(reader.REG.BitFraming, 7)
-            res = reader.transceive(reader.PCD.TRANSCEIVE, [reader.PICC.REQIDL])
-            print(res)
+            reader.write(REG.BitFraming, 7)
+            res = reader.transceive(PCD.TRANSCEIVE, [PICC.REQIDL])
+            print(f'STATUS={res.status} DATA={res.data} SIZE={res.size}')
             time.sleep(timeout)
 
     except KeyboardInterrupt:
