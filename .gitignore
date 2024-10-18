@@ -1,1 +1,3 @@
-MFRC522.pyc
+*.pyc
+__pycache__
+.idea
