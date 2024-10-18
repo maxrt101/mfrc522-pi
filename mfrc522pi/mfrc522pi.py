@@ -211,7 +211,7 @@ class MFRC522:
         while True:
             n = self.read(self.REG.CommIrq)
             i -= 1
-            if ~((i != 0) and (~n & 1) and ~(n & wait_irq)):
+            if ~((i != 0) and ~(n & 1) and ~(n & wait_irq)):
                 break
 
         self.clear_bit_mask(self.REG.BitFraming, 0x80)
