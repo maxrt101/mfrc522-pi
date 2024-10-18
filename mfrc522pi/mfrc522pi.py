@@ -144,7 +144,7 @@ class MFRC522:
 
     def clear_bit_mask(self, reg: int, mask: int):
         tmp = self.read(reg)
-        self.write(reg, tmp | (~mask))
+        self.write(reg, tmp & (~mask))
 
     def antenna_on(self):
         tmp = self.read(self.REG.TxControl)
@@ -216,10 +216,7 @@ class MFRC522:
 
         self.clear_bit_mask(self.REG.BitFraming, 0x80)
 
-        print(f'transceive: i={i}')
-
         if i != 0:
-            print(f'transceive: REG.Error={self.read(self.REG.Error)}')
             if (self.read(self.REG.Error) & 0x1B) == 0:
                 status = self.MI.OK
 
