@@ -19,7 +19,7 @@ def main():
             res = reader.anti_collision()
 
             if res.status == reader.MI.OK:
-                print(f'UID: {" ".join(["0x{:02X}".format(x) for x in res.uid])}')
+                print(f'UID: {" ".join([f"0x{x:02X}" for x in res.uid])}')
 
                 key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 
@@ -30,7 +30,7 @@ def main():
                 reader.stop_crypto1()
 
                 for sector_id, sector_data in data.items():
-                    print(f'{sector_id}: {" ".join(["0x{:02X}".format(x) for x in sector_data])}')
+                    print(f'{sector_id:03}: {" ".join([f"0x{x:02X}" for x in sector_data])}')
     except KeyboardInterrupt:
         reader.cleanup()
         print('Exiting...')
