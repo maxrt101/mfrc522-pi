@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
-from mfrc522pi import MFRC522
+from mfrc522pi import *
 import traceback
+
+BLOCK = 8
 
 
 def main():
@@ -12,29 +14,32 @@ def main():
 
     try:
         while True:
-            res = reader.request(reader.PICC.REQIDL)
+            res = reader.request(PICC.REQIDL)
 
-            if res.status == reader.MI.OK:
+            if res.status == Status.OK:
                 print('\nDetected a card')
 
             res = reader.anti_collision()
 
-            if res.status == reader.MI.OK:
+            if res.status == Status.OK:
                 print(f'UID: {" ".join([f"0x{x:02X}" for x in res.uid])}')
 
                 key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 
                 reader.select_tag(res.uid)
 
-                status = reader.authenticate(reader.PICC.AUTHENT1A, 8, key, res.uid)
+                status = reader.authenticate(PICC.AUTHENT1A, 8, key, res.uid)
 
-                if status == reader.MI.OK:
-                    print('Reading block 8')
-                    data = reader.read_block(8)
+                if status == Status.OK:
+                    print(f'Reading block {BLOCK}')
+                    res = reader.read_block(BLOCK)
                     reader.stop_crypto1()
-                    print(' '.join(f'0x{x:02X}' for x in data))
+                    if res.status == Status.OK:
+                        print(' '.join(f'0x{x:02X}' for x in res.data))
+                    else:
+                        print(f'Error reading block {BLOCK}: {res.status}')
                 else:
-                    print('Authentication error')
+                    print(f'Authentication error: {res.status}')
     except KeyboardInterrupt:
         print('Exiting...')
     except Exception as e:
