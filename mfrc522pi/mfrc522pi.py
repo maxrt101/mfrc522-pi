@@ -211,13 +211,13 @@ class MFRC522:
         while True:
             n = self.read(self.REG.CommIrq)
             i -= 1
-            if ~(i and (~n & 1) and ~(n & wait_irq)):
+            if ~((i != 0) and (~n & 1) and ~(n & wait_irq)):
                 break
 
         self.clear_bit_mask(self.REG.BitFraming, 0x80)
 
-        if i:
-            if not (self.read(self.REG.Error) & 0x10):
+        if i != 0:
+            if (self.read(self.REG.Error) & 0x1B) == 0:
                 status = self.MI.OK
 
                 if n & irq_enable & 1:

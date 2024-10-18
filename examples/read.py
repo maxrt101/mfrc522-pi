@@ -9,7 +9,7 @@ def main():
     print('MFRC522 reader example')
     print('Press ^C to stop')
 
-    try :
+    try:
         while True:
             res = reader.request(reader.PICC.REQIDL)
 
