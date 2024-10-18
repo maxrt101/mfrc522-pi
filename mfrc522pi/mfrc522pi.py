@@ -1,6 +1,7 @@
 ##!/usr/bin/env python3
 
 from dataclasses import dataclass
+import mfrc522pi.logger
 import RPi.GPIO as GPIO
 import spi
 
@@ -302,7 +303,7 @@ class MFRC522:
         res = self.transceive(self.PCD.TRANSCEIVE, buffer)
 
         if res.status == self.MI.OK and res.size == 0x18:
-            print(f'select_tag: size={res.data[0]}')
+            logger.debug(f'select_tag: size={res.data[0]}')
             return res.data[0]
 
         return 0
@@ -315,11 +316,11 @@ class MFRC522:
         res = self.transceive(self.PCD.AUTHENT, buffer)
 
         if res.status != self.MI.OK:
-            print('authenticate: error')
+            logger.error('authenticate: error')
 
         # WTF
         if self.read(self.REG.Status2) & 8 == 0:
-            print('authenticate: error status2 & 8 == 0')
+            logger.error('authenticate: error status2 & 8 == 0')
 
         return res.status
 
@@ -331,22 +332,20 @@ class MFRC522:
         data.extend(self.calculate_crc(data))
         res = self.transceive(self.PCD.TRANSCEIVE, data)
         if res.status != self.MI.OK:
-            print('read_block: read error')
+            logger.error('read_block: read error')
             return []
         if len(res.data) == 16:
-            print(f'Sector {addr}: {res.data}')
+            logger.debug(f'Sector {addr}: {res.data}')
         return res.data
 
     def write_block(self, addr: int, data: list[int]):
         if len(data) != 16:
-            print('write_block: len(data) != 16')
+            logger.error('write_block: len(data) != 16')
             return self.MI.ERR
 
         buffer = [self.PICC.WRITE, addr]
         buffer.extend(self.calculate_crc(buffer))
         res = self.transceive(self.PCD.TRANSCEIVE, buffer)
-
-        print(f'write_block(CMD): size={res.size} data[0]&0xF={res.data[0] & 0xF}')
 
         if res.status != self.MI.OK or res.size != 4 or res.data[0] & 0xF != 0xA:
             return self.MI.ERR
@@ -356,8 +355,6 @@ class MFRC522:
         buffer.extend(self.calculate_crc(buffer))
         
         res = self.transceive(self.PCD.TRANSCEIVE, buffer)
-        
-        print(f'write_block(DAT): size={res.size} data[0]&0xF={res.data[0] & 0xF}')
 
         if res.status != self.MI.OK or res.size != 4 or res.data[0] & 0xF != 0xA:
             return self.MI.ERR
@@ -371,7 +368,7 @@ class MFRC522:
             if status == self.MI.OK:
                 buffer[i] = self.read_block(i)
             else:
-                print('dump_1k: authentication error')
+                logger.error('dump_1k: authentication error')
 
         return buffer
         
