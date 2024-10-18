@@ -194,8 +194,8 @@ class MFRC522:
             wait_irq = 0
 
         self.write(self.REG.CommIEn, irq_enable | 0x80)
-        self.write(self.REG.CommIrq, 0x80)
-        self.write(self.REG.FIFOLevel, 0x80)
+        self.clear_bit_mask(self.REG.CommIrq, 0x80)
+        self.set_bit_mask(self.REG.FIFOLevel, 0x80)
 
         self.write(self.REG.Command, self.PCD.IDLE)
 
