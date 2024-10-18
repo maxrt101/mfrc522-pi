@@ -220,25 +220,17 @@ class MFRC522:
             if (self.read(self.REG.Error) & 0x1B) == 0:
                 status = self.MI.OK
 
-                print(f'transceive: OK (i & err)')
-
                 if n & irq_enable & 1:
-                    print(f'transceive: NO TAG ERR (n={n} irq={irq_enable})')
                     status = self.MI.NOTAGERR
 
                 if command == self.PCD.TRANSCEIVE:
-                    print(f'transceive: CMD TRANSCEIVE')
                     n = self.read(self.REG.FIFOLevel)
                     last_bits = self.read(self.REG.Control) & 7
-
-                    print(f'transceive: n={n} last_bits={last_bits}')
 
                     buffer_size = (n-1) * 8 + last_bits if last_bits != 0 else n * 8
 
                     n = 1 if n == 0 else n
                     n = self.MAX_LEN if n > self.MAX_LEN else n
-
-                    print(f'transceive: size={buffer_size} n={n}')
 
                     for _ in range(n):
                         buffer.append(self.read(self.REG.FIFOData))
