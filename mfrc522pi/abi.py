@@ -1,3 +1,4 @@
+# MFRC522 ABI - Registers and such
 
 class PCD:
     IDLE       = 0x00

@@ -1,3 +1,5 @@
+# Status (Error) and various Data Classes that represent the data returned by the API
+
 from dataclasses import dataclass
 from enum import Enum
 
@@ -13,6 +15,7 @@ class Status(Enum):
     SELECT_TAG_BAD_SIZE_ERROR = 7
     WRITE_BLOCK_BAD_SIZE_ERROR = 8
     WRITE_BLOCK_BAD_DATA_ERROR = 9
+    DATA_CORRUPTED_ERROR = 10
 
 
 @dataclass
@@ -39,6 +42,7 @@ class SelectTagResult:
     status: Status
     # TODO: Check if this is really the type
     tag_type: int
+
 
 @dataclass
 class ReadBlockResul:

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Example on how to dump 1k of the card
 
 from mfrc522pi import *
 import traceback

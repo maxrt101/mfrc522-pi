@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Example on how to detect and read card UID and specific blocks
 
 from mfrc522pi import *
 import traceback

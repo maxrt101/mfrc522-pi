@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Example for debug. Help to see what is read from the module
 
 from mfrc522pi import *
 import time

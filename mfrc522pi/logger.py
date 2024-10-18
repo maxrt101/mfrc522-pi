@@ -1,3 +1,4 @@
+# Custom logger for mfrc522pi
 import logging
 
 
