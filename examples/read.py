@@ -19,7 +19,7 @@ def main():
             res = reader.anti_collision()
 
             if res.status == reader.MI.OK:
-                print(f'UID: {res.uid}')
+                print(f'UID: {" ".join([hex(x) for x in res.uid])}')
 
                 key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 
