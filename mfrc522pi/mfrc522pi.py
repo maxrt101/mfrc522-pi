@@ -259,14 +259,10 @@ class MFRC522:
         res = self.transceive(self.PCD.TRANSCEIVE, serial)
 
         if res.status == self.MI.OK:
-            print(f'AC: TX OK {res.data} {res.size}')
             if len(res.data) == 5:
                 serial_check = 0
-                for x in res.data[:5]:
-                    print(f'CRC before: {serial_check} {x}')
+                for x in res.data[:4]:
                     serial_check ^= x
-                    print(f'CRC after:  {serial_check} {x}')
-                print(f'CRC: {serial_check}')
                 if serial_check != res.data[4]:
                     res.status = self.MI.ERR
             else:
