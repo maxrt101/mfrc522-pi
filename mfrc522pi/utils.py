@@ -25,12 +25,12 @@ def load_dump_result(filename: str) -> DumpResult:
         if magic != MAGIC:
             result.status = Status.DATA_CORRUPTED_ERROR
             return result
-        sectors_count = struct.unpack('>I', f.read(4))
-        for _ in sectors_count:
+        sectors_count = struct.unpack('>I', f.read(4))[0]
+        for _ in range(sectors_count):
             sector_id = struct.unpack('>I', f.read(4))[0]
             sector_data = []
             for i in range(16):
-                sector_data.append(struct.pack('B', f.read(1))[0])
+                sector_data.append(struct.unpack('B', f.read(1))[0])
             result.data[sector_id] = sector_data
-
+    return result
 
