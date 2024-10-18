@@ -362,7 +362,7 @@ class MFRC522:
         return self.MI.OK
     
     def dump_1k(self, key, uid) -> dict[int, list[int]]:
-        buffer = {}
+        buffer = dict()
         for i in range(64):
             status = self.authenticate(self.PICC.AUTHENT1A, i, key, uid)
             if status == self.MI.OK:
