@@ -2,32 +2,37 @@
 
 from mfrc522pi import MFRC522
 
-reader = MFRC522(reset=22)
 
-print('MFRC522 reader example')
-print('Press ^C to stop')
+def main():
+    reader = MFRC522(reset=22)
 
-while True:
-    res = reader.request(reader.PICC.REQIDL)
+    print('MFRC522 reader example')
+    print('Press ^C to stop')
 
-    if res.status == reader.MI.OK:
-        print('Detected a card')
+    try :
+        while True:
+            res = reader.request(reader.PICC.REQIDL)
 
-    res = reader.anti_collision()
+            if res.status == reader.MI.OK:
+                print('Detected a card')
 
-    if res.status == reader.MI.OK:
-        print(f'UID: {res.uid}')
+            res = reader.anti_collision()
 
-        key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
+            if res.status == reader.MI.OK:
+                print(f'UID: {res.uid}')
 
-        reader.select_tag(res.uid)
+                key = [0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF]
 
-        status = reader.authenticate(reader.PICC.AUTHENT1A, 8, key, res.uid)
+                reader.select_tag(res.uid)
 
-        if status == reader.MI.OK:
-            print('Reading block 8')
-            reader.read_block(8)
-            reader.stop_crypto1()
-        else:
-            print('Authentication error')
+                status = reader.authenticate(reader.PICC.AUTHENT1A, 8, key, res.uid)
 
+                if status == reader.MI.OK:
+                    print('Reading block 8')
+                    reader.read_block(8)
+                    reader.stop_crypto1()
+                else:
+                    print('Authentication error')
+    except KeyboardInterrupt:
+        reader.cleanup()
+        print('Exiting...')
