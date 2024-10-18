@@ -32,7 +32,7 @@ def main():
             status = reader.select_tag(res.uid)
 
             if status != Status.OK:
-                print(f'Selection error: {res.status}')
+                print(f'Selection error: {status}')
                 continue
 
             print('Dumping 1k:')

@@ -34,13 +34,13 @@ def main():
             status = reader.select_tag(res.uid)
 
             if status != Status.OK:
-                print(f'Selection error: {res.status}')
+                print(f'Selection error: {status}')
                 continue
 
             status = reader.authenticate(PICC.AUTHENT1A, 8, key, res.uid)
 
             if status != Status.OK:
-                print(f'Authentication error: {res.status}')
+                print(f'Authentication error: {status}')
                 continue
 
             print(f'Reading block {BLOCK}')
