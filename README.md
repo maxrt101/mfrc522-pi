@@ -1,17 +1,22 @@
 # mfrc522pi
 
-A small class to interface with the NFC reader Module MFRC522 on the Raspberry Pi.
-This is a Python port of the example code for the NFC module MF522-AN.
+Small library to detect/read/write MIFARE 13.56 MHz tags/cards/etc using RFID-MFRC522 module.  
+This fork doesn't add anything fundamentally new, just updates the API and makes the code more readable.  
 
-## Requirements
-This code requires you to have SPI-Py installed from the following repository:
-https://github.com/lthiery/SPI-Py
+## How to run
+ - `git clone https://github.com/lthiery/SPI-Py`
+ - `cd SPI-Py`
+ - `sudo python setup.py install`
+ - `cd ../`
+ - `git clone git@github.com:maxrt101/mfrc522-pi.git`
+ - `cd mfrc522-pi`
+ - `sudo python setup.py install`
+ - `python3 examples/read.py`
 
 ## Examples
-This repository includes a couple of examples showing how to read, write, and dump data from a chip. They are thoroughly commented, and should be easy to understand.
+This repository includes a couple of examples showing how to read, write, and dump data from a card.
 
-## Pins
-
+## How to connect to PI
 | Name | Pin # | Pin name |
 |:------:|:-------:|:--------:|
 | SDA  | 24    |  GPIO8   |
@@ -22,6 +27,9 @@ This repository includes a couple of examples showing how to read, write, and du
 | GND  | Any   |   GND    |
 | RST  | 22    |  GPIO25  |
 | 3.3V | 1     |   3V3    |
+
+Run `sudo raspi-config` and select `Interface Options` -> `SPI` - > `Yes`, after that select `Finish` and reboot the device.  
+If you can't read cards, you may need to add `dtoverlay=spi0-hw-cs` to `/boot/firmware/config.txt` and reboot the device again.  
 
 ## License
 This code and examples are licensed under the GNU Lesser General Public License 3.0.
