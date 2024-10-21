@@ -2,6 +2,8 @@
 # Main class that works with RC522 using SPI
 
 from mfrc522pi.logger import logger
+from mfrc522pi.result import *
+from mfrc522pi.status import *
 from mfrc522pi.data import *
 from mfrc522pi.abi import *
 import RPi.GPIO as GPIO
@@ -69,7 +71,7 @@ class MFRC522:
         spi.closeSPI(self.spi)
         GPIO.cleanup()
 
-    def transceive(self, command: int, data) -> TransceiveResult:
+    def transceive(self, command: int, data) -> Result[TransceiveResult]:
         buffer = []
         buffer_size = 0
         status = Status.TRANSCEIVE_ERROR
@@ -127,9 +129,9 @@ class MFRC522:
                 for _ in range(n):
                     buffer.append(self.read(REG.FIFOData))
 
-        return TransceiveResult(status, buffer, buffer_size)
+        return Result(status, TransceiveResult(buffer, buffer_size))
 
-    def request(self, reg_mode: int) -> RequestResult:
+    def request(self, reg_mode: int) -> Result[RequestResult]:
         tag_type = [reg_mode]
 
         self.write(REG.BitFraming, 7)
@@ -139,9 +141,9 @@ class MFRC522:
         if res.size != 0x10:
            res.status = Status.REQUEST_BAD_SIZE_ERROR
 
-        return RequestResult(res.status, res.size)
+        return Result(res.status, RequestResult(res.size))
 
-    def anti_collision(self) -> AntiCollisionResult:
+    def anti_collision(self) -> Result[AntiCollisionResult]:
         self.write(REG.BitFraming, 0)
 
         serial = [PICC.ANTICOLL, 0x20]
@@ -158,7 +160,7 @@ class MFRC522:
             else:
                 res.status = Status.ANTI_COLLISION_BAD_UID_SIZE_ERROR
 
-        return AntiCollisionResult(res.status, res.data)
+        return Result(res.status, AntiCollisionResult(res.data))
 
     def calculate_crc(self, data: list[int]):
         self.clear_bit_mask(REG.DivIrq, 4)
@@ -181,7 +183,7 @@ class MFRC522:
             self.read(REG.CRCResultM)
         ]
 
-    def select_tag(self, serial: list[int]) -> SelectTagResult:
+    def select_tag(self, serial: list[int]) -> Result[SelectTagResult]:
         buffer = [PICC.SElECTTAG, 0x70]
 
         for i in range(5):
@@ -196,7 +198,7 @@ class MFRC522:
         else:
             logger.debug(f'select_tag: size={res.data[0]}')
 
-        return SelectTagResult(res.status, res.data[0])
+        return Result(res.status, SelectTagResult(res.data[0]))
 
     def authenticate(self, mode: int, addr: int, key: list[int], serial: list[int]) -> Status:
         buffer = [mode, addr]
@@ -217,7 +219,7 @@ class MFRC522:
     def stop_crypto1(self):
         self.clear_bit_mask(REG.Status2, 8)
 
-    def read_block(self, addr: int) -> ReadBlockResult:
+    def read_block(self, addr: int) -> Result[BlockData]:
         data = [PICC.READ, addr]
         data.extend(self.calculate_crc(data))
         res = self.transceive(PCD.TRANSCEIVE, data)
@@ -226,7 +228,7 @@ class MFRC522:
         else:
             if len(res.data) == 16:
                 logger.debug(f'Sector {addr}: {res.data}')
-        return ReadBlockResult(res.status, addr, res.data)
+        return Result(res.status, BlockData(addr, res.data))
 
     def write_block(self, addr: int, data: list[int]) -> Status:
         if len(data) != 16:
@@ -257,16 +259,16 @@ class MFRC522:
         
         return Status.OK
 
-    def read_blocks(self, key: list[int], uid: list[int], block_count: int) -> ReadBlocksResult:
+    def read_blocks(self, key: list[int], uid: list[int], block_count: int) -> Result[BlocksData]:
         buffer = dict()
         for i in range(block_count):
             status = self.authenticate(PICC.AUTHENT1A, i, key, uid)
             if status == Status.OK:
                 block = self.read_block(i)
                 if block.status != Status.OK:
-                    return ReadBlocksResult(block.status, buffer)
+                    return Result(block.status, BlocksData(buffer))
                 buffer[i] = block.data
             else:
-                return ReadBlocksResult(status, buffer)
+                return Result(status, BlocksData(buffer))
 
-        return ReadBlocksResult(Status.OK, buffer)
+        return Result(Status.OK, BlocksData(buffer))

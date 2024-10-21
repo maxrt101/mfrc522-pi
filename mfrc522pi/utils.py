@@ -1,4 +1,6 @@
 # mfrc522pi utilities
+from mfrc522pi.status import *
+from mfrc522pi.result import *
 from mfrc522pi.data import *
 import struct
 
@@ -6,7 +8,7 @@ import struct
 MAGIC = bytes('MFRC522PI_DATA'.encode('utf-8'))
 
 
-def save_blocks(filename: str, data: ReadBlocksResult) -> Status:
+def save_blocks(filename: str, data: BlocksData) -> Status:
     with open(filename, 'wb') as f:
         f.write(MAGIC)
         f.write(struct.pack('>I', len(data.data)))
@@ -18,8 +20,8 @@ def save_blocks(filename: str, data: ReadBlocksResult) -> Status:
     return Status.OK
 
 
-def load_blocks(filename: str) -> ReadBlocksResult:
-    result = ReadBlocksResult(Status.OK, dict())
+def load_blocks(filename: str) -> Result[BlocksData]:
+    result = Result(Status.OK, BlocksData(dict()))
     with open(filename, 'rb') as f:
         magic = f.read(len(MAGIC))
         if magic != MAGIC:
@@ -31,6 +33,6 @@ def load_blocks(filename: str) -> ReadBlocksResult:
             sector_data = []
             for i in range(16):
                 sector_data.append(struct.unpack('B', f.read(1))[0])
-            result.data[sector_id] = sector_data
+            result.value.data[sector_id] = sector_data
     return result
 
