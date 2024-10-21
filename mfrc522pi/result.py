@@ -19,7 +19,5 @@ class Result(Generic[T]):
     def get(self) -> T:
         return self.value
 
-    def __getattribute__(self, name: str):
-        if name in self.__dict__:
-            return self.__dict[name]
+    def __getattr__(self, name: str):
         return self.value.__getattribute__(name)
