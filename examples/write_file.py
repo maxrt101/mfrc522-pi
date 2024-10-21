@@ -1,14 +1,22 @@
 #!/usr/bin/env python3
-# Example on how to dump 1k of the card and save it to a file
+# Example on how to detect and read card UID and write specific blocks
 
 from mfrc522pi import *
 import traceback
+import sys
+
+BLOCK = 8
 
 
 def main():
+    if len(sys.argv) != 2:
+        exit(f'Usage: python3 {sys.argv[0]} FILENAME')
+
+    data_from_file = load_blocks(sys.argv[1])
+
     reader = MFRC522(reset=22)
 
-    print('MFRC522 dump to file example')
+    print('MFRC522 write from file example')
     print('Press ^C to stop')
 
     try:
@@ -38,22 +46,20 @@ def main():
                 print(f'Selection error: {res.status.name}')
                 continue
 
-            print('Dumping 1k:')
-            res = reader.read_blocks(key, uid, 64)
-            reader.stop_crypto1()
+            status = reader.authenticate(PICC.AUTHENT1A, 8, key, uid)
 
-            if res.status != Status.OK:
-                print(f'Error dumping: {res.status.name}')
+            if status != Status.OK:
+                print(f'Authentication error: {status.name}')
                 continue
 
-            for sector_id, sector_data in res.data.items():
-                print(f'{sector_id:03}: {" ".join([f"0x{x:02X}" for x in sector_data])}')
+            status = reader.write_blocks(data_from_file.value)
 
-            filename = '_'.join([f'{x:02X}' for x in uid]) + '.dump.bin'
+            if status != Status.OK:
+                print(f'Write error: {status.name}')
+                continue
 
-            if save_blocks(filename, res) == Status.OK:
-                print(f'Saved data to {filename}')
-                break
+            reader.stop_crypto1()
+            break
 
     except KeyboardInterrupt:
         print('Exiting...')

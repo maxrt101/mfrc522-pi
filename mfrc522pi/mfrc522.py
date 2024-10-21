@@ -272,3 +272,10 @@ class MFRC522:
                 return Result(status, BlocksData(buffer))
 
         return Result(Status.OK, BlocksData(buffer))
+
+    def write_blocks(self, data: BlocksData) -> Status:
+        for block_id, block_data in data.data.items():
+            status = self.write_block(block_id, block_data)
+            if status != Status.OK:
+                return status
+        return Status.OK
