@@ -39,7 +39,7 @@ def main():
                 continue
 
             print('Dumping 1k:')
-            res = reader.dump_1k(key, uid)
+            res = reader.read_blocks(key, uid, 64)
             reader.stop_crypto1()
 
             if res.status != Status.OK:
