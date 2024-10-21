@@ -68,6 +68,7 @@ class MFRC522:
         self.antenna_on()
 
     def cleanup(self):
+        self.stop_crypto1()
         spi.closeSPI(self.spi)
         GPIO.cleanup()
 
