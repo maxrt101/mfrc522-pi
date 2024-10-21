@@ -39,7 +39,7 @@ def main():
                 continue
 
             print('Dumping 1k:')
-            res = reader.dump_1k(key, uid)
+            res = reader.read_blocks(key, uid, 64)
             reader.stop_crypto1()
 
             if res.status != Status.OK:
@@ -51,7 +51,7 @@ def main():
 
             filename = '_'.join([f'{x:02X}' for x in uid]) + '.dump.bin'
 
-            if save_dump_result(filename, res) == Status.OK:
+            if save_blocks(filename, res) == Status.OK:
                 print(f'Saved data to {filename}')
                 break
 

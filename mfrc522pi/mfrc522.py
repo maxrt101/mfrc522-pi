@@ -217,7 +217,7 @@ class MFRC522:
     def stop_crypto1(self):
         self.clear_bit_mask(REG.Status2, 8)
 
-    def read_block(self, addr: int) -> ReadBlockResul:
+    def read_block(self, addr: int) -> ReadBlockResult:
         data = [PICC.READ, addr]
         data.extend(self.calculate_crc(data))
         res = self.transceive(PCD.TRANSCEIVE, data)
@@ -226,7 +226,7 @@ class MFRC522:
         else:
             if len(res.data) == 16:
                 logger.debug(f'Sector {addr}: {res.data}')
-        return ReadBlockResul(res.status, addr, res.data)
+        return ReadBlockResult(res.status, addr, res.data)
 
     def write_block(self, addr: int, data: list[int]) -> Status:
         if len(data) != 16:
@@ -256,19 +256,17 @@ class MFRC522:
             return Status.WRITE_BLOCK_BAD_DATA_ERROR
         
         return Status.OK
-    
-    def dump_1k(self, key, uid) -> DumpResult:
+
+    def read_blocks(self, key: list[int], uid: list[int], block_count: int) -> ReadBlocksResult:
         buffer = dict()
-        for i in range(64):
+        for i in range(block_count):
             status = self.authenticate(PICC.AUTHENT1A, i, key, uid)
             if status == Status.OK:
                 block = self.read_block(i)
                 if block.status != Status.OK:
-                    return DumpResult(block.status, buffer)
+                    return ReadBlocksResult(block.status, buffer)
                 buffer[i] = block.data
             else:
-                return DumpResult(status, buffer)
+                return ReadBlocksResult(status, buffer)
 
-        return DumpResult(Status.OK, buffer)
-        
-        
+        return ReadBlocksResult(Status.OK, buffer)

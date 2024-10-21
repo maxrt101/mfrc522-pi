@@ -45,13 +45,13 @@ class SelectTagResult:
 
 
 @dataclass
-class ReadBlockResul:
+class ReadBlockResult:
     status: Status
     sector: int
     data: list[int]
 
 
 @dataclass
-class DumpResult:
+class ReadBlocksResult:
     status: Status
     data: dict[int, list[int]]

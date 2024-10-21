@@ -3,10 +3,10 @@ from mfrc522pi.data import *
 import struct
 
 
-MAGIC = bytes('MFRC522PI_DUMP'.encode('utf-8'))
+MAGIC = bytes('MFRC522PI_DATA'.encode('utf-8'))
 
 
-def save_dump_result(filename: str, data: DumpResult) -> Status:
+def save_blocks(filename: str, data: ReadBlocksResult) -> Status:
     with open(filename, 'wb') as f:
         f.write(MAGIC)
         f.write(struct.pack('>I', len(data.data)))
@@ -18,8 +18,8 @@ def save_dump_result(filename: str, data: DumpResult) -> Status:
     return Status.OK
 
 
-def load_dump_result(filename: str) -> DumpResult:
-    result = DumpResult(Status.OK, dict())
+def load_blocks(filename: str) -> ReadBlocksResult:
+    result = ReadBlocksResult(Status.OK, dict())
     with open(filename, 'rb') as f:
         magic = f.read(len(MAGIC))
         if magic != MAGIC:
