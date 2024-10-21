@@ -7,7 +7,6 @@ setuptools.setup(
     name="mfrc522pi",
     version="0.1.0",
     author="maxrtx",
-    author_email="maxrt101@git",
     description="Setup for mfrc522pi",
     long_description=long_description,
     long_description_content_type="text/markdown",

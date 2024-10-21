@@ -24,10 +24,6 @@ class PICC:
     TRANSFER  = 0xB0
     HALT      = 0x50
 
-class MI:
-    OK       = 0
-    NOTAGERR = 1
-    ERR      = 2
 
 class REG:
     Reserved00     = 0x00

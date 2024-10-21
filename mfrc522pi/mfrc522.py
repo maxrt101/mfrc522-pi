@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # Main class that works with RC522 using SPI
 
-from  mfrc522pi.logger import logger
-from  mfrc522pi.data import *
-from  mfrc522pi.abi import *
+from mfrc522pi.logger import logger
+from mfrc522pi.data import *
+from mfrc522pi.abi import *
 import RPi.GPIO as GPIO
 import spi
 
